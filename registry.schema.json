@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/FlexNetOS/flow_hub/registry.schema.json",
+  "title": "flow_hub registry",
+  "description": "Catalog of automation workflows (n8n flows and other workflow-engine artifacts). registry.json is the source of truth; scripts/validate.py enforces it. See template_hub/docs/hub-standard.md.",
+  "type": "object",
+  "required": ["version", "updated", "org", "hub", "flows"],
+  "properties": {
+    "schema": { "type": "string" },
+    "version": { "type": "string" },
+    "updated": { "type": "string" },
+    "org": { "type": "string" },
+    "hub": { "const": "flow_hub" },
+    "description": { "type": "string" },
+    "flows": { "type": "array", "items": { "$ref": "#/$defs/flow" } }
+  },
+  "$defs": {
+    "flow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "displayName", "category", "status", "summary", "engine", "trigger", "doc"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+        "displayName": { "type": "string" },
+        "category": { "enum": ["n8n", "github-action", "cron", "webhook", "script-pipeline"] },
+        "status": { "enum": ["stable", "beta", "experimental", "deprecated"] },
+        "summary": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "engine": { "enum": ["n8n", "github-actions", "systemd", "cron"] },
+        "flowPath": { "type": "string" },
+        "trigger": { "enum": ["webhook", "schedule", "manual", "event"] },
+        "schedule": { "type": "string", "description": "Cron expression." },
+        "requiresApi": { "type": "boolean" },
+        "env": { "type": "object", "additionalProperties": { "type": "string" } },
+        "nodeCount": { "type": "integer" },
+        "doc": { "type": "string" },
+        "snippet": { "type": "string" },
+        "upstream": { "type": "string" },
+        "notes": { "type": "string" }
+      }
+    }
+  }
+}
