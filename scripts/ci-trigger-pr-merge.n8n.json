@@ -1,0 +1,41 @@
+{
+  "name": "ci-trigger-pr-merge",
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "webhook",
+        "httpMethod": "POST",
+        "path": "pr-merge-hook",
+        "authentication": "headerAuth"
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [250, 300],
+      "webhookId": "pr-merge-hook"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$node[\"Webhook\"].json[\"headers\"][\"X-GitHub-Event\"]}}",
+        "bodyParametersFields": {
+          "namesValues": [
+            { "name": "event", "value": "={{$node[\"Webhook\"].json[\"payload\"][\"action\"]}}" },
+            { "name": "pr_number", "value": "={{$node[\"Webhook\"].json[\"payload\"][\"pull_request\"][\"number\"]}}" }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Trigger CI",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [500, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [[{"node": "Trigger CI", "type": "main", "index": 0}]]
+    }
+  },
+  "settings": { "saveExecutionProgress": true }
+}
