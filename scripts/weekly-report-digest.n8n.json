@@ -1,0 +1,31 @@
+{
+  "name": "weekly-report-digest",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": { "interval": [{ "field": "weekday", "weekday": "5", "hours": [16] }] }
+      },
+      "name": "Weekly Cron",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1.2,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "mode": "customize",
+        "outputFormat": "json",
+        "jsonContent": "{\"title\": \"Weekly Meta Repo Report\", \"date\": \"={{$now.toISO()}}\", \"summary\": \"Auto-generated summary of all hub activities.\"}"
+      },
+      "name": "Digest",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [500, 300]
+    }
+  ],
+  "connections": {
+    "Weekly Cron": {
+      "main": [[{"node": "Digest", "type": "main", "index": 0}]]
+    }
+  },
+  "settings": { "saveExecutionProgress": true }
+}
